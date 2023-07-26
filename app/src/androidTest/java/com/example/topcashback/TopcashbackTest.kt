@@ -66,7 +66,5 @@ class TopcashbackTest {
         // Press enter to submit the search
         uiDevice.pressEnter()
 
-
-
     }
 }

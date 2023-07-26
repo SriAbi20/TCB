@@ -1,7 +1,3 @@
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -12,10 +8,6 @@ import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import org.junit.Test
 import org.junit.runner.RunWith
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.matcher.ViewMatchers.withHint
-import androidx.test.espresso.matcher.ViewMatchers.withText
 
 @RunWith(AndroidJUnit4::class)
 class TopcashbackTest {
@@ -52,18 +44,26 @@ class TopcashbackTest {
         signInButton.clickAndWaitForNewWindow()
 
         // Login as an existing user
-        onView(withHint("Enter email"))
-            .perform(typeText("sriabinaya1997@gmail.com"), closeSoftKeyboard())
-        onView(withHint("Enter password"))
-            .perform(typeText("Sriabi@20"), closeSoftKeyboard())
-        onView(withText("Login"))
-            .perform(click())
+        val emailField = uiDevice.findObject(UiSelector().text("Enter email"))
+        emailField.setText("sriabinaya1997@gmail.com")
+
+        val passwordField = uiDevice.findObject(UiSelector().text("Enter password"))
+        passwordField.setText("Sriabi@20")
+
+        val loginButton = uiDevice.findObject(UiSelector().text("Login"))
+        loginButton.click()
+
+        // Dismiss any popups after login, such as "save password"
+        val noButton = uiDevice.findObject(UiSelector().text("No"))
+        if (noButton.exists()) {
+            noButton.click()
+        }
 
         // Search for a merchant
-        onView(withHint("Search Merchant / Store Name"))
-            .perform(typeText("Nike"), closeSoftKeyboard())
+        val searchBar = uiDevice.findObject(UiSelector().text("Search Merchant / Store Name"))
+        searchBar.setText("Nike")
 
-
+        // Press enter to submit the search
+        uiDevice.pressEnter()
     }
-
 }

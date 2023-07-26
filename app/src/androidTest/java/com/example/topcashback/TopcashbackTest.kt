@@ -1,10 +1,7 @@
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
@@ -21,19 +18,20 @@ class TopcashbackTest {
         Intents.init()
 
         val packageName = "uk.co.topcashback.topcashback" // Package name of the Topcashback app.
-        val mainActivity = ".main.activity.MainActivity" // Main activity of the Topcashback app.
+        val activityName = ".splash.SplashActivity" // New Activity name
 
-        // Here, we are setting the exact component (Activity) to be launched.
-        val componentName = ComponentName(packageName, packageName + mainActivity)
+        // Create an explicit intent
+        val launchIntent = Intent()
+        launchIntent.setClassName(packageName, packageName + activityName)
 
-        // Try to start the Topcashback app.
-        val launchIntent = Intent().setComponent(componentName)
+        // Add the FLAG_ACTIVITY_NEW_TASK flag. This is required if you're starting the Activity from outside of an Activity context.
+        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         // Start Activity
-        getInstrumentation().context.startActivity(launchIntent)
+        getInstrumentation().targetContext.startActivity(launchIntent)
 
         // Verify that the Topcashback app was started.
-        Intents.intended(IntentMatchers.hasComponent(componentName))
+        Intents.intended(IntentMatchers.hasComponent(packageName + activityName))
 
         // End the intents recording.
         Intents.release()

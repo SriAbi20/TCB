@@ -1,3 +1,7 @@
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -8,6 +12,10 @@ import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import org.junit.Test
 import org.junit.runner.RunWith
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.matcher.ViewMatchers.withHint
+import androidx.test.espresso.matcher.ViewMatchers.withText
 
 @RunWith(AndroidJUnit4::class)
 class TopcashbackTest {
@@ -41,8 +49,21 @@ class TopcashbackTest {
 
         // Find the "Member sign-in" button and click it
         val signInButton: UiObject = uiDevice.findObject(UiSelector().text("Member sign-in"))
-        if (signInButton.waitForExists(5000)) {
-            signInButton.click()
-        }
+        signInButton.clickAndWaitForNewWindow()
+
+        // Login as an existing user
+        onView(withHint("Enter email"))
+            .perform(typeText("sriabinaya1997@gmail.com"), closeSoftKeyboard())
+        onView(withHint("Enter password"))
+            .perform(typeText("Sriabi@20"), closeSoftKeyboard())
+        onView(withText("Login"))
+            .perform(click())
+
+        // Search for a merchant
+        onView(withHint("Search Merchant / Store Name"))
+            .perform(typeText("Nike"), closeSoftKeyboard())
+
+
     }
+
 }

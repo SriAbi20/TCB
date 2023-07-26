@@ -1,52 +1,50 @@
 import androidx.test.espresso.intent.Intents
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiObject
+import androidx.test.uiautomator.UiSelector
+import org.junit.Test
+import org.junit.runner.RunWith
 
-
+@RunWith(AndroidJUnit4::class)
 class TopcashbackTest {
 
-    // Replace "uk.co.topcashback.topcashback" with the actual package name of the Topcashback app
-    private val packageName = "uk.co.topcashback.topcashback"
-
-    // Replace "uk.co.topcashback.topcashback.main.activity.MainActivity" with the actual MainActivity class name of the Topcashback app
-    private val mainActivityClassName = "uk.co.topcashback.topcashback.main.activity.MainActivity"
-
-    @get:Rule
-    var activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
-
-    @Before
-    fun setUp() {
-        // Initialize the Intent monitoring with Intents.init()
-        Intents.init()
-    }
-
     @Test
-    fun testAppLaunch() {
-        // Create an Intent for the MainActivity of Topcashback app
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.setClassName(packageName, mainActivityClassName)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    fun testLaunchTopcashbackApp() {
+        // Start the intents recording.
+        Intents.init()
 
-        // Launch the Topcashback app using the Intent
-        activityScenarioRule.scenario.onActivity { activity ->
-            activity.startActivity(intent)
-        }
+        val packageName = "uk.co.topcashback.topcashback" // Package name of the Topcashback app.
+        val mainActivity = ".main.activity.MainActivity" // Main activity of the Topcashback app.
 
-        // Wait for the app to load or perform necessary actions for testing
-        // For example, you can use Espresso.onView() and ViewActions to interact with UI elements.
-        // Example: Espresso.onView(ViewMatchers.withId(R.id.buttonId)).perform(ViewActions.click())
+        // Here, we are setting the exact component (Activity) to be launched.
+        val componentName = ComponentName(packageName, packageName + mainActivity)
 
-        // ...
+        // Try to start the Topcashback app.
+        val launchIntent = Intent().setComponent(componentName)
 
-    }
+        // Start Activity
+        getInstrumentation().context.startActivity(launchIntent)
 
-    @After
-    fun tearDown() {
-        // Release Intent monitoring with Intents.release()
+        // Verify that the Topcashback app was started.
+        Intents.intended(IntentMatchers.hasComponent(componentName))
+
+        // End the intents recording.
         Intents.release()
+
+        // Get UiDevice instance
+        val uiDevice = UiDevice.getInstance(getInstrumentation())
+
+        // Find the "Member sign-in" button and click it
+        val signInButton: UiObject = uiDevice.findObject(UiSelector().text("Member sign-in"))
+        if (signInButton.waitForExists(5000)) {
+            signInButton.click()
+        }
     }
 }

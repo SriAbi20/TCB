@@ -1,35 +1,26 @@
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.topcashback.ui.theme.TopCashBackTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Launch the Topcashback app directly
-        val intent = packageManager.getLaunchIntentForPackage("uk.co.topcashback.topcashback")
-        startActivity(intent)
-        finish() // Optional: Finish the MainActivity to remove it from the back stack
+        launchTopcashbackApp()
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    TopCashBackTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            // If you had any content to preview, you can add it here
-        }
+    private fun launchTopcashbackApp() {
+        val packageName = "uk.co.topcashback.topcashback" // Package name of the Topcashback app.
+        val mainActivity = ".main.activity.MainActivity" // Main activity of the Topcashback app.
+
+        // Try to start the Topcashback app.
+        val launchIntent: Intent? = packageManager.getLaunchIntentForPackage(packageName)
+
+        // Here, we are setting the exact component (Activity) to be launched.
+        val componentName = ComponentName(packageName, packageName + mainActivity)
+        launchIntent?.component = componentName
+
+        startActivity(launchIntent)
+        finish() // Optional: Finish the MainActivity to remove it from the back stack
     }
 }

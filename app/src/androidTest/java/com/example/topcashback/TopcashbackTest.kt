@@ -106,10 +106,9 @@ class TopcashbackTest {
         val confirmLogoutButton = uiDevice.findObject(UiSelector().text("LOGOUT"))
         confirmLogoutButton.click()
 
-        // Wait for a while to ensure the logout process is complete
         Thread.sleep(2000)
 
-        // Press back until you exit the app
+
         while (uiDevice.currentPackageName == packageName) {
             uiDevice.pressBack()
         }

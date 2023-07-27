@@ -1,11 +1,14 @@
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import android.content.Intent
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
+import android.content.Intent
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -14,20 +17,19 @@ class TopcashbackTest {
 
     @Test
     fun testLaunchTopcashbackApp() {
-        // Start the intents recording.
+
         Intents.init()
 
         val packageName = "uk.co.topcashback.topcashback" // Package name of the Topcashback app.
-        val activityName = ".splash.SplashActivity" // New Activity name
+        val activityName = ".splash.SplashActivity" // Activity name
 
-        // Create an explicit intent
         val launchIntent = Intent()
         launchIntent.setClassName(packageName, packageName + activityName)
 
-        // Add the FLAG_ACTIVITY_NEW_TASK flag. This is required if you're starting the Activity from outside of an Activity context.
+
         launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-        // Start Activity
+
         getInstrumentation().targetContext.startActivity(launchIntent)
 
         // Verify that the Topcashback app was started.
@@ -36,12 +38,15 @@ class TopcashbackTest {
         // End the intents recording.
         Intents.release()
 
+        // Wait for the app to launch
+        Thread.sleep(5000)
+
         // Get UiDevice instance
         val uiDevice = UiDevice.getInstance(getInstrumentation())
 
-        // Find the "Member sign-in" button and click it
-        val signInButton: UiObject = uiDevice.findObject(UiSelector().text("Member sign-in"))
-        signInButton.clickAndWaitForNewWindow()
+        //click Memeber sign-in to navigate to the login page
+        val signInButton = uiDevice.findObject(UiSelector().textContains("Member sign-in"))
+        signInButton.click()
 
         // Login as an existing user
         val emailField = uiDevice.findObject(UiSelector().text("Enter email"))
@@ -61,10 +66,54 @@ class TopcashbackTest {
 
         // Search for a merchant
         val searchBar = uiDevice.findObject(UiSelector().text("Search Merchant / Store Name"))
-        searchBar.setText("Nike")
+        searchBar.click() // click to focus on the search field
+        searchBar.setText("Nike") // input the search term
+        uiDevice.pressEnter() // press the enter key to execute the search
 
-        // Press enter to submit the search
-        uiDevice.pressEnter()
+        // Assert that the first result shown is the searched merchant
+        val firstResult = uiDevice.findObject(UiSelector().text("Nike"))
+        assertTrue(firstResult.exists())
+
+        // Click on the first merchant
+        firstResult.click()
+
+        // Assert that the correct merchant page is displayed
+        val merchantPageText = uiDevice.findObject(UiSelector().textContains("Nike"))
+        assertTrue(merchantPageText.exists())
+
+        //Press the back button to navigate back to the list
+        uiDevice.pressBack()
+
+        //delay
+        Thread.sleep(500)
+
+        //Press the back button  to navigate to home page
+        uiDevice.pressBack()
+
+        //click more button to view the logout
+        val moreButton = uiDevice.findObject(UiSelector().description("More"))
+        moreButton.click()
+
+        // Find and click the "Logout" button
+        val logoutButton = uiDevice.findObject(UiSelector().text("Logout"))
+        logoutButton.click()
+
+        // Assert logout confirmation dialog is displayed
+        val logoutPrompt = uiDevice.findObject(UiSelector().text("Are you sure that you want to logout?"))
+        assertTrue(logoutPrompt.exists())
+
+        // Find and click the "LOGOUT" button in the dialog
+        val confirmLogoutButton = uiDevice.findObject(UiSelector().text("LOGOUT"))
+        confirmLogoutButton.click()
+
+        // Wait for a while to ensure the logout process is complete
+        Thread.sleep(2000)
+
+        // Press back until you exit the app
+        while (uiDevice.currentPackageName == packageName) {
+            uiDevice.pressBack()
+        }
+
 
     }
 }

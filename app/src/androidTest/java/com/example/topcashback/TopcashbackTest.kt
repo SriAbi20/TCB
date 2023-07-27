@@ -25,26 +25,18 @@ class TopcashbackTest {
 
         val launchIntent = Intent()
         launchIntent.setClassName(packageName, packageName + activityName)
-
-
         launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-
         getInstrumentation().targetContext.startActivity(launchIntent)
-
-        // Verify that the Topcashback app was started.
         Intents.intended(IntentMatchers.hasComponent(packageName + activityName))
-
-        // End the intents recording.
         Intents.release()
 
-        // Wait for the app to launch
+        // Added delay to wait for the app to launch
         Thread.sleep(5000)
 
         // Get UiDevice instance
         val uiDevice = UiDevice.getInstance(getInstrumentation())
 
-        //click Memeber sign-in to navigate to the login page
+        //click Member sign-in to navigate to the login page
         val signInButton = uiDevice.findObject(UiSelector().textContains("Member sign-in"))
         signInButton.click()
 
@@ -58,13 +50,13 @@ class TopcashbackTest {
         val loginButton = uiDevice.findObject(UiSelector().text("Login"))
         loginButton.click()
 
-        // Dismiss any popups after login, such as "save password"
+        // To dismiss popups
         val noButton = uiDevice.findObject(UiSelector().text("No"))
         if (noButton.exists()) {
             noButton.click()
         }
 
-        // Search for a merchant
+        // To Search for a merchant (Nike)
         val searchBar = uiDevice.findObject(UiSelector().text("Search Merchant / Store Name"))
         searchBar.click() // click to focus on the search field
         searchBar.setText("Nike") // input the search term
@@ -107,7 +99,6 @@ class TopcashbackTest {
         confirmLogoutButton.click()
 
         Thread.sleep(2000)
-
 
         while (uiDevice.currentPackageName == packageName) {
             uiDevice.pressBack()

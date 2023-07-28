@@ -47,6 +47,8 @@ Pre-requisite to create Automation Framework:
 
 - Dependencies -
 
+  Required OS - Android 9 and up
+
 
 
 Test Sets:

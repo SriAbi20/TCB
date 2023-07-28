@@ -23,12 +23,12 @@ Technology Stack:
 
 
 
-Framework Structure:
+Test class name
 
 ----------------------
 
+Topcashbacktest
 
-- Tests - Sample Pages
 
 
 Directories:
